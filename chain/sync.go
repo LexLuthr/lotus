@@ -852,12 +852,13 @@ loop:
 	log.Warnf("(fork detected) synced header chain (%s - %d) does not link to our best block (%s - %d)", incoming.Cids(), incoming.Height(), known.Cids(), known.Height())
 	fork, err := syncer.syncFork(ctx, base, known, ignoreCheckpoint)
 	if err != nil {
+		// PATCH: Still return a "past finality" error here, but DON'T mark as bad (due to as-yet-unknown bug)
 		if xerrors.Is(err, ErrForkTooLong) || xerrors.Is(err, ErrForkCheckpoint) {
 			// TODO: we're marking this block bad in the same way that we mark invalid blocks bad. Maybe distinguish?
-			log.Warn("adding forked chain to our bad tipset cache")
-			for _, b := range incoming.Blocks() {
-				syncer.bad.Add(b.Cid(), NewBadBlockReason(incoming.Cids(), "fork past finality"))
-			}
+			log.Warn("syncFork: WOULD HAVE ADDED forked chain (%s) to our bad tipset cache", incoming.Cids())
+			//for _, b := range incoming.Blocks() {
+			//	syncer.bad.Add(b.Cid(), NewBadBlockReason(incoming.Cids(), "fork past finality"))
+			//}
 		}
 		return nil, xerrors.Errorf("failed to sync fork: %w", err)
 	}
@@ -877,7 +878,7 @@ var ErrForkCheckpoint = fmt.Errorf("fork would require us to diverge from checkp
 // we add the entire subchain to the denylist. Else, we find the common ancestor, and add the missing chain
 // fragment until the fork point to the returned []TipSet.
 func (syncer *Syncer) syncFork(ctx context.Context, incoming *types.TipSet, known *types.TipSet, ignoreCheckpoint bool) ([]*types.TipSet, error) {
-
+	log.Warnf("syncFork: called with incoming %s, known: %s", incoming.Cids(), known.Cids())
 	var chkpt *types.TipSet
 	if !ignoreCheckpoint {
 		chkpt = syncer.store.GetCheckpoint()
@@ -891,6 +892,12 @@ func (syncer *Syncer) syncFork(ctx context.Context, incoming *types.TipSet, know
 	tips, err := syncer.Exchange.GetBlocks(ctx, incoming.Parents(), int(build.ForkLengthThreshold))
 	if err != nil {
 		return nil, err
+	}
+
+	if len(tips) > 0 {
+		log.Warnf("syncFork: asked to fetch from %s, fetched %d blocks, with head %s", incoming.Parents(), len(tips), tips[0].Cids())
+	} else {
+		log.Warnf("syncFork: fetched ZERO blocks when syncing fork from %s", incoming.Parents())
 	}
 
 	nts, err := syncer.store.LoadTipSet(ctx, known.Parents())
@@ -921,6 +928,7 @@ func (syncer *Syncer) syncFork(ctx context.Context, incoming *types.TipSet, know
 			// height.
 			forkLengthInHead++
 			if forkLengthInHead > int(build.ForkLengthThreshold) {
+				log.Warnf("syncFork: forkLengthInHead too large, returning ErrForkTooLong")
 				return nil, ErrForkTooLong
 			}
 
@@ -936,6 +944,7 @@ func (syncer *Syncer) syncFork(ctx context.Context, incoming *types.TipSet, know
 		}
 	}
 
+	log.Warnf("syncFork: iterated over all fetched tipsets, returning ErrForkTooLong")
 	return nil, ErrForkTooLong
 }
 
