@@ -19,22 +19,23 @@ The Filecoin network version 22 delivers the following FIPs:
 
 ## v13 Builtin Actor Bundle
 
-The actor bundles for the calibration network can be checked as follows:
+The actor bundles for the **calibration network** can be checked as follows:
 
+```
 lotus state actor-cids --network-version=22
 Network Version: 22
 Actor Version: 13
 Manifest CID: bafy2bzaceap46ftyyuhninmzelt2ev6kus5itrggszrk5wuhzf2khm47dtrfa
 
 Actor             CID  
-account		  bafk2bzaceb3j36ri5y5mfklgp5emlvrms6g4733ss2j3l7jismrxq6ng3tcc6
-cron		  bafk2bzaceaz6rocamdxehgpwcbku6wlapwpgzyyvkrploj66mlqptsulf52bs
-datacap		  bafk2bzacea22nv5g3yngpxvonqfj4r2nkfk64y6yw2malicm7odk77x7zuads
-eam		  bafk2bzaceatqtjzj7623i426noaslouvluhz6e3md3vvquqzku5qj3532uaxg
-ethaccount	  bafk2bzacean3hs7ga5csw6g3uu7watxfnqv5uvxviebn3ba6vg4sagwdur5pu
-evm		  bafk2bzacec5ibmbtzuzjgwjmksm2n6zfq3gkicxqywwu7tsscqgdzajpfctxk
-init		  bafk2bzaced5sq72oemz6qwi6yssxwlos2g54zfprslrx5qfhhx2vlgsbvdpcs
-multisig	  bafk2bzacedbgei6jkx36fwdgvoohce4aghvpohqdhoco7p4thszgssms7olv2
+account		        bafk2bzaceb3j36ri5y5mfklgp5emlvrms6g4733ss2j3l7jismrxq6ng3tcc6
+cron		          bafk2bzaceaz6rocamdxehgpwcbku6wlapwpgzyyvkrploj66mlqptsulf52bs
+datacap		        bafk2bzacea22nv5g3yngpxvonqfj4r2nkfk64y6yw2malicm7odk77x7zuads
+eam		            bafk2bzaceatqtjzj7623i426noaslouvluhz6e3md3vvquqzku5qj3532uaxg
+ethaccount	      bafk2bzacean3hs7ga5csw6g3uu7watxfnqv5uvxviebn3ba6vg4sagwdur5pu
+evm		            bafk2bzacec5ibmbtzuzjgwjmksm2n6zfq3gkicxqywwu7tsscqgdzajpfctxk
+init		          bafk2bzaced5sq72oemz6qwi6yssxwlos2g54zfprslrx5qfhhx2vlgsbvdpcs
+multisig	        bafk2bzacedbgei6jkx36fwdgvoohce4aghvpohqdhoco7p4thszgssms7olv2
 paymentchannel    bafk2bzaceasmgmfsi4mjanxlowsub65fmevhzky4toeqbtw4kp6tmu4kxjpgq
 placeholder       bafk2bzacedfvut2myeleyq67fljcrw4kkmn5pb5dpyozovj7jpoez5irnc3ro
 reward            bafk2bzacedjyp6ll5ez27dfgldjj4tntxfvyp4pa5zkk7s5uhipzqjyx2gmuc
@@ -43,10 +44,11 @@ storageminer      bafk2bzaceckzw3v7wqliyggvjvihz4wywchnnsie4frfvkm3fm5znb64mofri
 storagepower      bafk2bzacea7t4wynzjajl442mpdqbnh3wusjusqtnzgpvefvweh4n2tgzgqhu
 system            bafk2bzacedjnrb5glewazsxpcx6rwiuhl4kwrfcqolyprn6rrjtlzmthlhdq6
 verifiedregistry  bafk2bzacednskl3bykz5qpo54z2j2p4q44t5of4ktd6vs6ymmg2zebsbxazkm
+```
 
 ## Migration
 
-We are expecting a heavier than normal state migration for this upgrade due to the amount of state changes introduced with Direct Data Onboarding.
+We are expecting a bit heavier than normal state migration for this upgrade due to the amount of state changes introduced with Direct Data Onboarding.
 
 All node operators, including storage providers, should be aware that ONE pre-migration is being scheduled 120 epochs before the upgrade. It will take around 10-20 minutes for the pre-migration and less than 30 seconds for the final migration, depending on the amount of historical state in the node blockstore and the hardware specs the node is running on. During this time, expect slower block validation times, increased CPU and memory usage, and longer delays for API queries
 
