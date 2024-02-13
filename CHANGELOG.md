@@ -4,7 +4,57 @@
 
 ## Improvements
 
-### Tracing API
+# v1.26.0-rc1 / 2024-02-14
+
+This is the first release candidate of the upcoming MANDATORY Lotus v1.26.0 release, which will deliver the Filecoin network version 22, codenamed Dragon 🐉.
+
+**This release candidate does NOT set an upgrade epoch for mainnet, but sets the calibration network to upgrade at epoch 1108174, which is 2024-02-27T14:00:00Z.**
+
+The Filecoin network version 22 delivers the following FIPs:
+
+- [FIP-0063: Switching to new Drand mainnet network](https://github.com/filecoin-project/FIPs/blob/master/FIPS/fip-0063.md)
+- [FIP-0074: Remove cron-based automatic deal settlement](https://github.com/filecoin-project/FIPs/blob/master/FIPS/fip-0074.md)
+- [FIP-0076: Direct data onboarding](https://github.com/filecoin-project/FIPs/blob/master/FIPS/fip-0076.md)
+- [FIP-0083: Add built-in Actor events in the Verified Registry, Miner and Market Actors](https://github.com/filecoin-project/FIPs/blob/master/FIPS/fip-0083.md)
+
+## v13 Builtin Actor Bundle
+
+The actor bundles for the calibration network can be checked as follows:
+
+lotus state actor-cids --network-version=22
+Network Version: 22
+Actor Version: 13
+Manifest CID: bafy2bzaceap46ftyyuhninmzelt2ev6kus5itrggszrk5wuhzf2khm47dtrfa
+
+Actor             CID  
+account		  bafk2bzaceb3j36ri5y5mfklgp5emlvrms6g4733ss2j3l7jismrxq6ng3tcc6
+cron		  bafk2bzaceaz6rocamdxehgpwcbku6wlapwpgzyyvkrploj66mlqptsulf52bs
+datacap		  bafk2bzacea22nv5g3yngpxvonqfj4r2nkfk64y6yw2malicm7odk77x7zuads
+eam		  bafk2bzaceatqtjzj7623i426noaslouvluhz6e3md3vvquqzku5qj3532uaxg
+ethaccount	  bafk2bzacean3hs7ga5csw6g3uu7watxfnqv5uvxviebn3ba6vg4sagwdur5pu
+evm		  bafk2bzacec5ibmbtzuzjgwjmksm2n6zfq3gkicxqywwu7tsscqgdzajpfctxk
+init		  bafk2bzaced5sq72oemz6qwi6yssxwlos2g54zfprslrx5qfhhx2vlgsbvdpcs
+multisig	  bafk2bzacedbgei6jkx36fwdgvoohce4aghvpohqdhoco7p4thszgssms7olv2
+paymentchannel    bafk2bzaceasmgmfsi4mjanxlowsub65fmevhzky4toeqbtw4kp6tmu4kxjpgq
+placeholder       bafk2bzacedfvut2myeleyq67fljcrw4kkmn5pb5dpyozovj7jpoez5irnc3ro
+reward            bafk2bzacedjyp6ll5ez27dfgldjj4tntxfvyp4pa5zkk7s5uhipzqjyx2gmuc
+storagemarket     bafk2bzacedgzqswfdjamtja7gqj2ns76frqcbaolr3b7yjj2oehh2gwybf72w
+storageminer      bafk2bzaceckzw3v7wqliyggvjvihz4wywchnnsie4frfvkm3fm5znb64mofri
+storagepower      bafk2bzacea7t4wynzjajl442mpdqbnh3wusjusqtnzgpvefvweh4n2tgzgqhu
+system            bafk2bzacedjnrb5glewazsxpcx6rwiuhl4kwrfcqolyprn6rrjtlzmthlhdq6
+verifiedregistry  bafk2bzacednskl3bykz5qpo54z2j2p4q44t5of4ktd6vs6ymmg2zebsbxazkm
+
+## Migration
+
+We are expecting a heavier than normal state migration for this upgrade due to the amount of state changes introduced with Direct Data Onboarding.
+
+All node operators, including storage providers, should be aware that ONE pre-migration is being scheduled 120 epochs before the upgrade. It will take around 10-20 minutes for the pre-migration and less than 30 seconds for the final migration, depending on the amount of historical state in the node blockstore and the hardware specs the node is running on. During this time, expect slower block validation times, increased CPU and memory usage, and longer delays for API queries
+
+We recommend node operators (who haven't enabled splitstore discard mode) that do not care about historical chain states, to prune the chain blockstore by syncing from a snapshot 1-2 days before the upgrade.
+
+You can test out the migration by running running the [benchmarking a network migration tutorial here.](https://lotus.filecoin.io/kb/test-migration/)
+
+## Tracing API
 
 Replace the `CodeCid` field in the message trace (added in 1.23.4) with an `InvokedActor` field.
 
@@ -49,6 +99,14 @@ Replace the `CodeCid` field in the message trace (added in 1.23.4) with an `Invo
 ```
 
 This means the trace now contains an accurate "snapshot" of the actor at the time of the call, information that may not be present in the final state-tree (e.g., due to reverts). This will hopefully improve the performance and accuracy of indexing services.
+
+## New features
+
+## Improvements
+
+## Dependencies
+
+## Others
 
 # v1.25.2 / 2024-01-11 
 
